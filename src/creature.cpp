@@ -15,7 +15,7 @@ void Creature::draw() {
   bottom_tiles[1] = bottom_tiles[0] + 1;
 
   multi_vram_buffer_horz(top_tiles, 2, NTADR_A(2 * column, 2 * row));
-  multi_vram_buffer_vert(bottom_tiles, 2, NTADR_B(2 * column, 2 * row + 1));
+  multi_vram_buffer_horz(bottom_tiles, 2, NTADR_A(2 * column, 2 * row + 1));
   Attributes::set(column, row, color);
 }
 

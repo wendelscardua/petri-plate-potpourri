@@ -1,5 +1,6 @@
 #include "gameplay.hpp"
 #include "assets-loader.hpp"
+#include "attributes.hpp"
 #include "global.hpp"
 #include "subrand.hpp"
 #include <nesdoug.h>
@@ -16,18 +17,24 @@ static const u8 num_columns_per_row[] = {
 };
 
 Gameplay::Gameplay(Global &global_state) : global_state(global_state) {
+  AssetsLoader::load_gameplay_assets();
+
   num_creatures = MAX_CREATURES; // TODO: change this
+  Attributes::init();
   for (u8 i = 0; i < num_creatures; i++) {
     u8 row = subrand8(10);
-    u8 column = subrand8(num_columns_per_row[row] - 1) + start_column_per_row[row];
+    u8 column =
+        subrand8(num_columns_per_row[row] - 1) + start_column_per_row[row];
     row += starting_row;
 
     creature[i].row = row;
     creature[i].column = column;
     creature[i].genes = rand8();
-  }
 
-  AssetsLoader::load_gameplay_assets();
+    creature[i].draw();
+    flush_vram_update2();
+  }
+  Attributes::flush();
 
   ppu_on_all();
   pal_fade_to(0, 4);
