@@ -1,4 +1,4 @@
-# add_metasprite_asset(SOURCE "metasprites.nss" TARGET "metasprites.cpp" HEADER "metasprites.hpp" BANK 1 NAMESPACE "UI")
+add_metasprite_asset(SOURCE "metasprites.nss" TARGET "metasprites.cpp" HEADER "metasprites.hpp" BANK 1 NAMESPACE "UI")
 
 add_library(SourceObj
   OBJECT
@@ -9,6 +9,7 @@ add_library(SourceObj
   global.cpp
   gameplay.cpp
   creature.cpp
+  lens.cpp
   subrand.s
 
   assets-loader.cpp
@@ -20,7 +21,7 @@ add_library(SourceObj
   banked-metasprites.s
   soundtrack.hpp
 
-  # ${CMAKE_CURRENT_BINARY_DIR}/metasprites.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/metasprites.cpp
 )
 
 set_property(

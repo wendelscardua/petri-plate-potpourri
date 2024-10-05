@@ -16,7 +16,7 @@ static const u8 num_columns_per_row[] = {
     8, 10, 12, 14, 14, 14, 14, 14, 12, 10, 8,
 };
 
-Gameplay::Gameplay(Global &global_state) : global_state(global_state) {
+Gameplay::Gameplay(Global &global_state) : global_state(global_state), lens(0x80, 0x80, screen_mirror) {
   AssetsLoader::load_gameplay_assets();
 
   num_creatures = MAX_CREATURES; // TODO: change this
@@ -38,7 +38,15 @@ Gameplay::Gameplay(Global &global_state) : global_state(global_state) {
 
   vram_adr(NTADR_A(0, 4));
   vram_read(screen_mirror,sizeof(screen_mirror));
+  vram_adr(NTADR_A(0, 4));
+  for(u16 i = 0; i < sizeof(screen_mirror); i++) {
+    vram_put(3);
+  }
+  lens.refill();
 
+  oam_clear();
+  lens.draw_sprite();
+  oam_hide_rest();
   ppu_on_all();
   pal_fade_to(0, 4);
 }
@@ -54,5 +62,8 @@ void Gameplay::run() {
     if (global_state.p1_input.pressed() & PAD_START) {
       break;
     }
+
+    lens.draw_sprite();
+    oam_hide_rest();
   }
 }
