@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+
+  gem 'thor'
+end
+
+require 'thor'
+require_relative './nexxt'
+
+# Tool for converting a NEXXT session into metasprite data
+class GenerateMetasprites < Thor
+  def self.exit_on_failure?
+    true
+  end
+
+  desc 'generate CPP HEADER SESSION_FILE', 'Generates C++ file and header based on NEXXT session'
+  method_option :bank, type: :string, required: true
+  method_option :namespace, type: :string, required: false
+  def generate(cpp_file, h_file, session_file)
+    namespace = options[:namespace] || 'Metasprite'
+
+    bank = options[:bank]
+    rodata = %Q(__attribute__((section(".prg_rom_#{bank}.metasprites.rodata"))))
+
+    session = NEXXT::Session.read(session_file)
+
+    File.open(cpp_file, 'w') do |f|
+      f.puts <<~PREAMBLE
+        #include "#{h_file}"
+
+        namespace #{namespace} {
+      PREAMBLE
+
+      session.metasprites.each do |metasprite|
+        f.puts "  #{namespace.upcase}_RODATA const Sprite #{metasprite.name.gsub(/\s+/,'')}[] = {"
+        metasprite.sprites.each do |sprite|
+          f.puts "     { .spr = { #{sprite.x}, #{sprite.y}, #{format('0x%02x', sprite.tile)}, #{sprite.attribute} } },"
+        end
+        f.puts '    { .terminator = 0x80 } };'
+      end
+      f.puts "}"
+    end
+
+    File.open(h_file, 'w') do |f|
+      f.puts <<~PREAMBLE
+        #pragma once
+        #include "common.hpp"
+        #define #{namespace.upcase}_RODATA #{rodata}
+        #define #{namespace.upcase}_BANK #{bank}
+        namespace #{namespace} {
+      PREAMBLE
+      session.metasprites.each do |metasprite|
+        f.puts "  extern #{namespace.upcase}_RODATA const Sprite #{metasprite.name.gsub(/\s+/,'')}[];"
+      end
+      f.puts "  enum class Metasprite_Id : u8 {"
+      session.metasprites.each do |metasprite|
+        f.puts "    #{metasprite.name.gsub(/\s+/,'')},"
+      end
+      f.puts "  };"
+      f.puts '}'
+    end
+  end
+end
+
+GenerateMetasprites.start
