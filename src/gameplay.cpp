@@ -36,6 +36,9 @@ Gameplay::Gameplay(Global &global_state) : global_state(global_state) {
   }
   Attributes::flush();
 
+  vram_adr(NTADR_A(0, 4));
+  vram_read(screen_mirror,sizeof(screen_mirror));
+
   ppu_on_all();
   pal_fade_to(0, 4);
 }
