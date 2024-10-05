@@ -15,6 +15,9 @@ AssetsLoader::load_gameplay_assets() {
   loader.load_chr(bg_chr, 4096);
   vram_adr(PPU_PATTERN_TABLE_1);
   loader.load_chr(spr_chr, 4096);
+
+  loader.load_pal(Palette::BG, bg_pal);
+  loader.load_pal(Palette::SPR, spr_pal);
 }
 
 ASSETS_LOADER_TEXT void AssetsLoader::load_chr(const void *data, u16 size) {

@@ -7,6 +7,9 @@ add_library(SourceObj
 
   main.cpp
   global.cpp
+  gameplay.cpp
+  creature.cpp
+  subrand.s
 
   assets-loader.cpp
   attributes.cpp

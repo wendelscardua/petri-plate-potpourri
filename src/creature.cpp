@@ -3,8 +3,7 @@
 #include <nesdoug.h>
 #include <neslib.h>
 
-Creature::Creature(u8 row, u8 column, u8 genes)
-    : genes(genes), row(row), column(column) {}
+Creature::Creature() {}
 
 void Creature::draw() {
   u8 top_tiles[2];

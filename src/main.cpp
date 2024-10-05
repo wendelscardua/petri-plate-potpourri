@@ -1,3 +1,4 @@
+#include "gameplay.hpp"
 #include "global.hpp"
 #include <mapper.h>
 #include <nesdoug.h>
@@ -16,10 +17,14 @@ int main() {
 
   Global global_state;
 
-  // global_state.game_state = Global::GameState::TitleScreen;
+  global_state.game_state = Global::GameState::Gameplay;
 
   while (true) {
     switch (global_state.game_state) {
+    case Global::GameState::Gameplay: {
+      Gameplay gameplay(global_state);
+      gameplay.run();
+      }
     }
   }
 }

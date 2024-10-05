@@ -19,7 +19,7 @@ public:
 
   bool target;
 
-  Creature(u8 row, u8 column, u8 genes);
+  Creature();
 
   // draw on nametable
   void draw();
