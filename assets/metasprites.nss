@@ -3,8 +3,8 @@ NSTssTXT
 BtnTiles=1
 BtnChecker=0
 BtnSelTiles=0
-BtnChrBank1=0
-BtnChrBank2=1
+BtnChrBank1=1
+BtnChrBank2=0
 BtnGridAll=1
 BtnGridTile=0
 BtnGridAtr=1
@@ -46,7 +46,7 @@ VarTileViewTagBuf=0
 VarBgPalCur=2
 VarPalActive=0
 VarTileActive=50
-VarBankActive=4096
+VarBankActive=0
 VarPPUMask=0
 VarPPUMaskSet0=0
 VarPPUMaskSet1=0
@@ -123,13 +123,13 @@ propertyCHRlabel6=Label6
 propertyCHRlabel7=Label7
 
 
-MetaSprite0=searchlight
+MetaSprite0=lens
 
 MetaSpriteBankName=draft
 
 FilterCHR=1
 FilterName=1
-FileNameCHR=\\wsl.localhost\Ubuntu\home\wendel\projects\petri-plate-potpourri\assets\bg.chr
+FileNameCHR=\\wsl.localhost\Ubuntu\home\wendel\projects\petri-plate-potpourri\assets\spr.chr
 FileNameName=\\wsl.localhost\Ubuntu\home\wendel\projects\petri-plate-potpourri\assets\screen.nam
 FileNamePal=\\wsl.localhost\Ubuntu\home\wendel\projects\petri-plate-potpourri\assets\spr.pal
 FileNameMetaSpriteBank=
