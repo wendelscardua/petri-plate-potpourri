@@ -24,11 +24,13 @@ public:
 
   enum HorizontalDirection {
     Left,
+    HorizontalNeutral,
     Right,
   } horizontal_direction;
 
   enum VerticalDirection {
     Up,
+    VerticalNeutral,
     Down,
   } vertical_direction;
 

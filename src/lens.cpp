@@ -7,7 +7,7 @@
 
 Lens::Lens(u8 x, u8 y, Input &input, u8 (&mirror)[])
     : mirror(mirror), x(x, 0), y(y, 0), x_speed(0), y_speed(0), input(input),
-      horizontal_direction(Right), vertical_direction(Down) {}
+      horizontal_direction(HorizontalNeutral), vertical_direction(VerticalNeutral) {}
 
 void Lens::draw_sprite() {
   banked_oam_meta_spr_horizontal(x.as_i(), y.as_i() - 1, UI_BANK, UI::lens);
@@ -99,8 +99,14 @@ void Lens::update() {
     }
   }
 
+  if (x_speed == 0) {
+    horizontal_direction = HorizontalNeutral;
+  }
+  if (y_speed == 0) {
+    vertical_direction = VerticalNeutral;
+  }
+
   const u8 blank_strip[] = {3, 3, 3, 3, 3, 3};
-  u8 new_strip[6];
 
   switch (vertical_direction) {
   case Up: {
@@ -116,9 +122,8 @@ void Lens::update() {
     multi_vram_buffer_horz(blank_strip, 6, NTADR_A(column, old_row));
     // draw row above
     u8 new_row = y.as_i() / 8 - 3;
-    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) -
-                               NTADR_A(0, 4),
-                           6, NTADR_A(column, new_row));
+    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) - NTADR_A(0, 4), 6,
+                           NTADR_A(column, new_row));
   } break;
   case Down: {
     u8 column = x.as_i() / 8 - 3;
@@ -133,15 +138,49 @@ void Lens::update() {
     if (y.as_i() & 0b111) { // round up to the next tile
       new_row++;
     }
-    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) -
-                               NTADR_A(0, 4),
-                           6, NTADR_A(column, new_row));
+    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) - NTADR_A(0, 4), 6,
+                           NTADR_A(column, new_row));
   } break;
   }
 
+  u8 new_strip[6];
+
   switch (horizontal_direction) {
-  case Left:
-  case Right:
-    break;
+  case Left: {
+    u8 row = y.as_i() / 8 - 3;
+    if (y.as_i() & 0b111) { // round up to the next tile
+      row++;
+    }
+    // delete right column
+    u8 old_column = x.as_i() / 8 + 3;
+    if (x.as_i() & 0b111) { // round up to the next tile
+      old_column++;
+    }
+    multi_vram_buffer_vert(blank_strip, 6, NTADR_A(old_column, row));
+    // draw left column
+    u8 new_column = x.as_i() / 8 - 3;
+    for (u8 i = 0; i < 6; i++) {
+      new_strip[i] = mirror[NTADR_A(new_column, row + i) - NTADR_A(0, 4)];
+    }
+    multi_vram_buffer_vert(new_strip, 6, NTADR_A(new_column, row));
+  } break;
+  case Right: {
+    u8 row = y.as_i() / 8 - 3;
+    if (y.as_i() & 0b111) { // round up to the next tile
+      row++;
+    }
+    // delete left column
+    u8 old_column = x.as_i() / 8 - 4;
+    multi_vram_buffer_vert(blank_strip, 6, NTADR_A(old_column, row));
+    // draw right column
+    u8 new_column = x.as_i() / 8 + 2;
+    if (x.as_i() & 0b111) { // round up to the next tile
+      new_column++;
+    }
+    for (u8 i = 0; i < 6; i++) {
+      new_strip[i] = mirror[NTADR_A(new_column, row + i) - NTADR_A(0, 4)];
+    }
+    multi_vram_buffer_vert(new_strip, 6, NTADR_A(new_column, row));
+  } break;
   }
 }
