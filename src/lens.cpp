@@ -106,81 +106,69 @@ void Lens::update() {
     vertical_direction = VerticalNeutral;
   }
 
-  const u8 blank_strip[] = {3, 3, 3, 3, 3, 3};
+  const u8 blank_strip[] = {3, 3, 3, 3, 3, 3, 3};
 
   switch (vertical_direction) {
   case Up: {
     u8 column = x.as_i() / 8 - 3;
-    if (x.as_i() & 0b111) { // round up to the next tile
-      column++;
-    }
     // delete row below
     u8 old_row = y.as_i() / 8 + 3;
     if (y.as_i() & 0b111) { // round up to the next tile
       old_row++;
     }
-    multi_vram_buffer_horz(blank_strip, 6, NTADR_A(column, old_row));
+    multi_vram_buffer_horz(blank_strip, 7, NTADR_A(column, old_row));
     // draw row above
     u8 new_row = y.as_i() / 8 - 3;
-    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) - NTADR_A(0, 4), 6,
+    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) - NTADR_A(0, 4), 7,
                            NTADR_A(column, new_row));
   } break;
   case Down: {
     u8 column = x.as_i() / 8 - 3;
-    if (x.as_i() & 0b111) { // round up to the next tile
-      column++;
-    }
     // delete row above
     u8 old_row = y.as_i() / 8 - 4;
-    multi_vram_buffer_horz(blank_strip, 6, NTADR_A(column, old_row));
+    multi_vram_buffer_horz(blank_strip, 7, NTADR_A(column, old_row));
     // draw row below
     u8 new_row = y.as_i() / 8 + 2;
     if (y.as_i() & 0b111) { // round up to the next tile
       new_row++;
     }
-    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) - NTADR_A(0, 4), 6,
+    multi_vram_buffer_horz(mirror + NTADR_A(column, new_row) - NTADR_A(0, 4), 7,
                            NTADR_A(column, new_row));
   } break;
   }
 
-  u8 new_strip[6];
+  u8 new_strip[7];
 
   switch (horizontal_direction) {
   case Left: {
     u8 row = y.as_i() / 8 - 3;
-    if (y.as_i() & 0b111) { // round up to the next tile
-      row++;
-    }
     // delete right column
     u8 old_column = x.as_i() / 8 + 3;
     if (x.as_i() & 0b111) { // round up to the next tile
       old_column++;
     }
-    multi_vram_buffer_vert(blank_strip, 6, NTADR_A(old_column, row));
+    multi_vram_buffer_vert(blank_strip, 7, NTADR_A(old_column, row));
     // draw left column
     u8 new_column = x.as_i() / 8 - 3;
-    for (u8 i = 0; i < 6; i++) {
+    for (u8 i = 0; i < 7; i++) {
       new_strip[i] = mirror[NTADR_A(new_column, row + i) - NTADR_A(0, 4)];
     }
-    multi_vram_buffer_vert(new_strip, 6, NTADR_A(new_column, row));
+    multi_vram_buffer_vert(new_strip, 7, NTADR_A(new_column, row));
   } break;
   case Right: {
     u8 row = y.as_i() / 8 - 3;
-    if (y.as_i() & 0b111) { // round up to the next tile
-      row++;
-    }
     // delete left column
     u8 old_column = x.as_i() / 8 - 4;
-    multi_vram_buffer_vert(blank_strip, 6, NTADR_A(old_column, row));
+    multi_vram_buffer_vert(blank_strip, 7, NTADR_A(old_column, row));
     // draw right column
     u8 new_column = x.as_i() / 8 + 2;
     if (x.as_i() & 0b111) { // round up to the next tile
       new_column++;
     }
-    for (u8 i = 0; i < 6; i++) {
+    for (u8 i = 0; i < 7; i++) {
       new_strip[i] = mirror[NTADR_A(new_column, row + i) - NTADR_A(0, 4)];
     }
-    multi_vram_buffer_vert(new_strip, 6, NTADR_A(new_column, row));
+    multi_vram_buffer_vert(new_strip, 7, NTADR_A(new_column, row));
   } break;
   }
 }
