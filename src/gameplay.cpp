@@ -6,14 +6,14 @@
 #include <nesdoug.h>
 #include <neslib.h>
 
-static const u8 starting_row = 3;
+static const u8 starting_row = 4;
 
 static const u8 start_column_per_row[] = {
-    4, 3, 2, 1, 1, 1, 1, 1, 2, 3, 4,
+    3, 2, 2, 2, 2, 2, 2, 2, 3,
 };
 
 static const u8 num_columns_per_row[] = {
-    8, 10, 12, 14, 14, 14, 14, 14, 12, 10, 8,
+    10, 12, 12, 12, 12, 12, 12, 12, 10,
 };
 
 Gameplay::Gameplay(Global &global_state, u8 num_creatures, u8 num_imposters,
@@ -86,7 +86,7 @@ void Gameplay::setup_creatures() {
 
   for (u8 i = 0; i < num_creatures; i++) {
   retry:
-    u8 row = subrand8(10);
+    u8 row = subrand8(8);
     u8 column =
         subrand8(num_columns_per_row[row] - 1) + start_column_per_row[row];
     row += starting_row;
