@@ -12,8 +12,8 @@ public:
   FixedPoint<8, 8, true> x_speed;
   FixedPoint<8, 8, true> y_speed;
 
-  static constexpr FixedPoint<8, 8, false> min_x = {32, 0}, max_x = {255 - 32, 0};
-  static constexpr FixedPoint<8, 8, false> min_y = {64, 0}, max_y = {239 - 32, 0};
+  static constexpr FixedPoint<8, 8, false> min_x = {32, 0}, max_x = {256 - 32, 0};
+  static constexpr FixedPoint<8, 8, false> min_y = {64, 0}, max_y = {240 - 32, 0};
   static constexpr FixedPoint<8, 8, true> max_speed = {1, 128};
 
   static constexpr FixedPoint<8, 8, true> acceleration = {0, 8};
