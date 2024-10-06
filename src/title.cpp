@@ -6,6 +6,7 @@
 
 Title::Title(Global &global_state) : global_state(global_state) {
   AssetsLoader::load_title_assets();
+  oam_clear();
   ppu_on_all();
   pal_fade_to(0, 4);
 }

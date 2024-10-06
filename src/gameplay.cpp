@@ -1,7 +1,9 @@
 #include "gameplay.hpp"
 #include "assets-loader.hpp"
 #include "attributes.hpp"
+#include "banked-metasprites.hpp"
 #include "global.hpp"
+#include "metasprites.hpp"
 #include "subrand.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
@@ -67,6 +69,15 @@ void Gameplay::run() {
   }
 
   oam_clear();
+
+  if (num_imposters == 0) {
+    banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Nice);
+  } else {
+    banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Fail);
+  }
+
+  oam_hide_rest();
+
   u16 index = 0;
   for (u8 row = 4; row < 30; row++, index += 0x20) {
     ppu_wait_nmi();
