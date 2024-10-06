@@ -33,9 +33,9 @@ int main() {
       global_state.plates_cleared = 0;
 
       u8 stage = 0;
-      const u8 creatures_per_stage[] = {8, 8, 10, 10, 12, 12, 12, 14, 16};
-      const u8 imposters_per_stage[] = {1, 2, 1, 2, 1, 2, 3, 3, 3};
-      const u8 fixed_features_per_stage[] = {4, 4, 3, 3, 2, 2, 2, 2, 2};
+      const u8 creatures_per_stage[] = {8, 8, 10, 10, 12, 12, 12, 14, 16, 16, 16};
+      const u8 imposters_per_stage[] = {1, 2, 1, 2, 1, 2, 3, 3, 3, 2, 3};
+      const u8 fixed_features_per_stage[] = {4, 4, 3, 3, 2, 2, 2, 2, 2, 1, 1};
 
       static_assert(sizeof(creatures_per_stage) == sizeof(imposters_per_stage));
       static_assert(sizeof(creatures_per_stage) ==
@@ -46,6 +46,8 @@ int main() {
         gameplay.run();
         if (stage < sizeof(creatures_per_stage) - 1) {
           stage++;
+        } else {
+          stage = 7;
         }
       }
       if (global_state.plates_cleared >
