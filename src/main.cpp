@@ -29,6 +29,7 @@ int main() {
       break;
     }
     case Global::GameState::Gameplay: {
+      global_state.misses = 0;
       Gameplay gameplay(global_state, 12, 3, 2);
       gameplay.run();
     }

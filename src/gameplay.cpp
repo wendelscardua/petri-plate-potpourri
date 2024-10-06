@@ -40,10 +40,10 @@ Gameplay::Gameplay(Global &global_state, u8 num_creatures, u8 num_imposters,
   pal_fade_to(0, 4);
 }
 
-Gameplay::~Gameplay() { pal_fade_to(4, 0); }
+Gameplay::~Gameplay() { pal_fade_to(4, 0); ppu_off(); }
 
 void Gameplay::run() {
-  while (true) {
+  while (num_imposters > 0 && global_state.misses < 3) {
     ppu_wait_nmi();
 
     global_state.p1_input.poll();
@@ -65,6 +65,30 @@ void Gameplay::run() {
     lens.draw_sprite();
     oam_hide_rest();
   }
+
+  oam_clear();
+  u16 index = 0;
+  for (u8 row = 4; row < 30; row++, index += 0x20) {
+    ppu_wait_nmi();
+    multi_vram_buffer_horz(screen_mirror + index, 0x20, NTADR_A(0, row));
+  }
+
+  while (true) {
+    ppu_wait_nmi();
+
+    global_state.p1_input.poll();
+
+    if (global_state.p1_input.pressed() & PAD_START) {
+      // TODO: remove this
+      global_state.game_state = Global::GameState::Title;
+      break;
+    }
+  }
+
+  // TODO:
+  // - reveal board
+  // - display win/lose message
+  // - wait input
 }
 
 const u8 fixed_mask_lut[][6] = {
