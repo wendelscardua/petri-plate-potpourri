@@ -81,6 +81,9 @@ void Gameplay::run() {
 
   if (num_imposters == 0) {
     global_state.plates_cleared++;
+    if (global_state.timer_seconds < 180) {
+      global_state.timer_seconds += 5;
+    }
     banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Nice);
   } else {
     banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Fail);
@@ -185,7 +188,7 @@ void Gameplay::refresh_hud() {
   }
 
   u8 timer_text[3];
-  u8 temp = global_state.timer_seconds;
+  u16 temp = global_state.timer_seconds;
 
   u8 digit = 0;
   if (temp >= 200) {

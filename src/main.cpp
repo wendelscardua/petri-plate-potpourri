@@ -32,7 +32,7 @@ int main() {
       global_state.misses = 0;
       global_state.plates_cleared = 0;
       global_state.timer_frames = 0;
-      global_state.timer_seconds = 99;
+      global_state.timer_seconds = 180;
 
       u8 stage = 0;
       const u8 creatures_per_stage[] = {8, 8, 10, 10, 12, 12, 12, 14, 16, 16, 16};
