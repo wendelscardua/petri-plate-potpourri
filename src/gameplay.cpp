@@ -99,7 +99,10 @@ void Gameplay::setup_creatures() {
     }
   }
 
-
+  for (u8 i = 0; i < num_imposters; i++) {
+    creature[i].genes ^= mask;
+    creature[i].target = true;
+  }
 
   Attributes::init();
   for (u8 i = 0; i < num_creatures; i++) {
