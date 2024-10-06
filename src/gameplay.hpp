@@ -5,7 +5,7 @@
 #include "lens.hpp"
 class Gameplay {
   Global &global_state;
-  static constexpr u8 MAX_CREATURES = 12;
+  static constexpr u8 MAX_CREATURES = 16;
   u8 num_creatures;
   u8 num_imposters;
   u8 num_fixed_features;
