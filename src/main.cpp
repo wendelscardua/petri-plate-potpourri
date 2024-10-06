@@ -35,6 +35,10 @@ int main() {
         Gameplay gameplay(global_state, 12, 3, 2);
         gameplay.run();
       }
+      if (global_state.plates_cleared >
+          global_state.plates_cleared_high_score) {
+        global_state.plates_cleared_high_score = global_state.plates_cleared;
+      }
       global_state.game_state = Global::GameState::Title;
     }
     }
