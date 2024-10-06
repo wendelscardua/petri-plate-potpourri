@@ -22,6 +22,10 @@
 
     ; Nametables
 
+    .global title_nam
+    title_nam:
+    .incbin "title.nam"
+
     .global screen_nam
     screen_nam:
     .incbin "screen.nam"

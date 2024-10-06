@@ -33,6 +33,7 @@ set_property(
   bg.chr
   spr.chr
 
+  title.nam
   screen.nam
 
   bg.pal
@@ -42,6 +43,7 @@ set_property(
 add_raw_asset(SOURCE "bg.chr")
 add_raw_asset(SOURCE "spr.chr")
 
+add_raw_asset(SOURCE "title.nam")
 add_raw_asset(SOURCE "screen.nam")
 
 add_raw_asset(SOURCE "bg.pal")
