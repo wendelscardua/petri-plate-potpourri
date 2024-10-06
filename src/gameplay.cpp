@@ -42,10 +42,13 @@ Gameplay::Gameplay(Global &global_state, u8 num_creatures, u8 num_imposters,
   pal_fade_to(0, 4);
 }
 
-Gameplay::~Gameplay() { pal_fade_to(4, 0); ppu_off(); }
+Gameplay::~Gameplay() {
+  pal_fade_to(4, 0);
+  ppu_off();
+}
 
 void Gameplay::run() {
-  while (num_imposters > 0 && global_state.misses < 3) {
+  while (num_imposters > 0 && global_state.misses < 3 && global_state.timer_seconds > 0) {
     ppu_wait_nmi();
 
     global_state.p1_input.poll();
@@ -61,6 +64,12 @@ void Gameplay::run() {
     }
 
     lens.update();
+
+    global_state.timer_frames++;
+    if (global_state.timer_frames == 60) {
+      global_state.timer_frames = 0;
+      global_state.timer_seconds--;
+    }
 
     refresh_hud();
 
@@ -96,11 +105,6 @@ void Gameplay::run() {
       break;
     }
   }
-
-  // TODO:
-  // - reveal board
-  // - display win/lose message
-  // - wait input
 }
 
 const u8 fixed_mask_lut[][6] = {
@@ -159,7 +163,7 @@ void Gameplay::inject_creature() {
   auto lens_column = lens.x.as_i() / 16;
   auto lens_row = lens.y.as_i() / 16;
   for (u8 i = 0; i < num_creatures; i++) {
-    Creature& c = creature[i];
+    Creature &c = creature[i];
     if (c.row == lens_row && c.column == lens_column) {
       c.splat(screen_mirror);
       if (c.target) {
@@ -180,5 +184,38 @@ void Gameplay::refresh_hud() {
     one_vram_buffer(0x58, NTADR_A(26 + global_state.misses, 2)); // 'x'
   }
 
-  // TODO: timer
+  u8 timer_text[3];
+  u8 temp = global_state.timer_seconds;
+
+  u8 digit = 0;
+  if (temp >= 200) {
+    temp -= 200;
+    digit += 2;
+  }
+  if (temp >= 100) {
+    temp -= 100;
+    digit += 1;
+  }
+  timer_text[0] = 0x10 + digit;
+  digit = 0;
+  if (temp >= 80) {
+    temp -= 80;
+    digit += 8;
+  }
+  if (temp >= 40) {
+    temp -= 40;
+    digit += 4;
+  }
+  if (temp >= 20) {
+    temp -= 20;
+    digit += 2;
+  }
+  if (temp >= 10) {
+    temp -= 10;
+    digit += 1;
+  }
+  timer_text[1] = 0x10 + digit;
+  timer_text[2] = 0x10 + temp;
+
+  multi_vram_buffer_horz(timer_text, 3, NTADR_A(15, 2));
 }

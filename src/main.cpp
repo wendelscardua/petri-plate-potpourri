@@ -31,6 +31,8 @@ int main() {
     case Global::GameState::Gameplay: {
       global_state.misses = 0;
       global_state.plates_cleared = 0;
+      global_state.timer_frames = 0;
+      global_state.timer_seconds = 99;
 
       u8 stage = 0;
       const u8 creatures_per_stage[] = {8, 8, 10, 10, 12, 12, 12, 14, 16, 16, 16};
@@ -41,7 +43,7 @@ int main() {
       static_assert(sizeof(creatures_per_stage) ==
                     sizeof(fixed_features_per_stage));
 
-      while (global_state.misses < 3) {
+      while (global_state.misses < 3 && global_state.timer_seconds > 0) {
         Gameplay gameplay(global_state, creatures_per_stage[stage], imposters_per_stage[stage], fixed_features_per_stage[stage]);
         gameplay.run();
         if (stage < sizeof(creatures_per_stage) - 1) {
