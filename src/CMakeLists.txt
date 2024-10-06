@@ -8,6 +8,7 @@ add_library(SourceObj
   main.cpp
   global.cpp
   gameplay.cpp
+  title.cpp
   creature.cpp
   lens.cpp
   subrand.s

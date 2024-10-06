@@ -9,6 +9,7 @@ extern "C" const char bg_chr[];
 extern "C" const char spr_chr[];
 
 extern "C" const char screen_nam[];
+extern "C" const char title_nam[];
 
 extern "C" const char bg_pal[];
 extern "C" const char spr_pal[];

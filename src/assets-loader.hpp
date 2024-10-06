@@ -20,5 +20,6 @@ public:
   ASSETS_LOADER_TEXT void load_nam(const void *data, u16 size);
   ASSETS_LOADER_TEXT void load_pal(Palette palette, const void *data);
 
+  ASSETS_LOADER_TEXT static void load_title_assets();
   ASSETS_LOADER_TEXT static void load_gameplay_assets();
 };
