@@ -2,7 +2,7 @@
 SOUNDENGINE_INC = 1
 
 ;Comment out these equates for features you do not wish to use.
-FEATURE_DPCM = 1
+; FEATURE_DPCM = 1
 FEATURE_ARPEGGIOS = 1
 
 .globalzp sound_region
