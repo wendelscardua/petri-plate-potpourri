@@ -72,23 +72,37 @@ const u8 fixed_mask_lut[][6] = {
 const u8 fixed_mask_lut_sizes[] = {1, 4, 6, 4, 1};
 
 void Gameplay::setup_creatures() {
-  Attributes::init();
 
-  const u8 mask = fixed_mask_lut[num_fixed_features][ subrand8(fixed_mask_lut_sizes[num_fixed_features]-1) ];
+  const u8 mask =
+      fixed_mask_lut[num_fixed_features]
+                    [subrand8(fixed_mask_lut_sizes[num_fixed_features] - 1)];
 
   for (u8 i = 0; i < num_creatures; i++) {
+    retry:
     u8 row = subrand8(10);
     u8 column =
         subrand8(num_columns_per_row[row] - 1) + start_column_per_row[row];
     row += starting_row;
 
+    for (u8 j = 0; j < i; j++) {
+      if (row == creature[j].row && column == creature[j].column) {
+        goto retry;
+      }
+    }
+
     creature[i].row = row;
     creature[i].column = column;
     creature[i].genes = rand8();
     if (i > 0) {
-      creature[i].genes = (creature[0].genes & mask) | (creature[i].genes & ~mask);
+      creature[i].genes =
+          (creature[0].genes & mask) | (creature[i].genes & ~mask);
     }
+  }
 
+
+
+  Attributes::init();
+  for (u8 i = 0; i < num_creatures; i++) {
     creature[i].draw();
     flush_vram_update2();
   }
