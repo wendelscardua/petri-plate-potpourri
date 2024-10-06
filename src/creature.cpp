@@ -26,3 +26,24 @@ void Creature::erase() {
   multi_vram_buffer_vert(zero_tiles, 2, NTADR_B(2 * column, 2 * row + 1));
   Attributes::set(column, row, 0);
 }
+
+void Creature::splat(u8 (&mirror)[]) {
+  const u8 splat_top[] = {
+      0xb0,
+      0xb1,
+  };
+  const u8 splat_bottom[] = {
+      0xc0,
+      0xc1,
+  };
+
+  multi_vram_buffer_horz(splat_top, 2, NTADR_A(2 * column, 2 * row));
+  multi_vram_buffer_horz(splat_bottom, 2, NTADR_A(2 * column, 2 * row + 1));
+
+  u16 index = (u16) NTADR_A(2 * column, 2 * row) - NTADR_A(0, 4);
+
+  mirror[index] = 0xb0;
+  mirror[index + 1] = 0xb1;
+  mirror[index + 0x20] = 0xc0;
+  mirror[index + 0x21] = 0xc1;
+}

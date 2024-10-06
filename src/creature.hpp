@@ -26,4 +26,7 @@ public:
 
   // erase from nametable
   void erase();
+
+  // splat on both nametable and mirror
+  void splat(u8 (&mirror)[]);
 };

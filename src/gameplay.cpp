@@ -125,7 +125,7 @@ void Gameplay::inject_creature() {
   for (u8 i = 0; i < num_creatures; i++) {
     Creature& c = creature[i];
     if (c.row == lens_row && c.column == lens_column) {
-      // TODO: splat
+      c.splat(screen_mirror);
       if (c.target) {
         num_imposters--;
         creature[i] = creature[--num_creatures];
