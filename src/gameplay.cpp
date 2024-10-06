@@ -16,27 +16,14 @@ static const u8 num_columns_per_row[] = {
     8, 10, 12, 14, 14, 14, 14, 14, 12, 10, 8,
 };
 
-Gameplay::Gameplay(Global &global_state)
-    : global_state(global_state),
+Gameplay::Gameplay(Global &global_state, u8 num_creatures, u8 num_imposters,
+                   u8 num_fixed_features)
+    : global_state(global_state), num_creatures(num_creatures),
+      num_imposters(num_imposters), num_fixed_features(num_fixed_features),
       lens(0x80, 0x80, global_state.p1_input, screen_mirror) {
   AssetsLoader::load_gameplay_assets();
 
-  num_creatures = MAX_CREATURES; // TODO: change this
-  Attributes::init();
-  for (u8 i = 0; i < num_creatures; i++) {
-    u8 row = subrand8(10);
-    u8 column =
-        subrand8(num_columns_per_row[row] - 1) + start_column_per_row[row];
-    row += starting_row;
-
-    creature[i].row = row;
-    creature[i].column = column;
-    creature[i].genes = rand8();
-
-    creature[i].draw();
-    flush_vram_update2();
-  }
-  Attributes::flush();
+  setup_creatures();
 
   vram_adr(NTADR_A(0, 4));
   vram_read(screen_mirror, sizeof(screen_mirror));
@@ -62,6 +49,7 @@ void Gameplay::run() {
     global_state.p1_input.poll();
 
     if (global_state.p1_input.pressed() & PAD_START) {
+      // TODO: remove this
       break;
     }
 
@@ -70,4 +58,39 @@ void Gameplay::run() {
     lens.draw_sprite();
     oam_hide_rest();
   }
+}
+
+const u8 fixed_mask_lut[][6] = {
+    {0b00000000, 0, 0, 0, 0, 0},                            // 0
+    {0b00000011, 0b00001100, 0b00110000, 0b11000000, 0, 0}, // 1
+    {0b00001111, 0b00110011, 0b00111100, 0b11000011, 0b11001100,
+     0b11110000},                                           // 2
+    {0b00111111, 0b11001111, 0b11110011, 0b11111100, 0, 0}, // 3
+    {0b11111111, 0, 0, 0, 0, 0}                             // 4
+};
+
+const u8 fixed_mask_lut_sizes[] = {1, 4, 6, 4, 1};
+
+void Gameplay::setup_creatures() {
+  Attributes::init();
+
+  const u8 mask = fixed_mask_lut[num_fixed_features][ subrand8(fixed_mask_lut_sizes[num_fixed_features]-1) ];
+
+  for (u8 i = 0; i < num_creatures; i++) {
+    u8 row = subrand8(10);
+    u8 column =
+        subrand8(num_columns_per_row[row] - 1) + start_column_per_row[row];
+    row += starting_row;
+
+    creature[i].row = row;
+    creature[i].column = column;
+    creature[i].genes = rand8();
+    if (i > 0) {
+      creature[i].genes = (creature[0].genes & mask) | (creature[i].genes & ~mask);
+    }
+
+    creature[i].draw();
+    flush_vram_update2();
+  }
+  Attributes::flush();
 }

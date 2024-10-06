@@ -22,7 +22,7 @@ int main() {
   while (true) {
     switch (global_state.game_state) {
     case Global::GameState::Gameplay: {
-      Gameplay gameplay(global_state);
+      Gameplay gameplay(global_state, 12, 3, 2);
       gameplay.run();
       }
     }
