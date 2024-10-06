@@ -19,4 +19,6 @@ public:
 
   void setup_creatures();
   void run();
+  void refresh_hud();
+  void inject_creature();
 };

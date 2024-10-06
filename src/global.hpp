@@ -17,5 +17,7 @@ public:
   Input p1_input;
   Input p2_input;
 
+  u8 misses;
+
   Global();
 };

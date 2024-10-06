@@ -53,7 +53,14 @@ void Gameplay::run() {
       break;
     }
 
+    if (global_state.p1_input.pressed() & PAD_A) {
+      // antibiotic shot
+      inject_creature();
+    }
+
     lens.update();
+
+    refresh_hud();
 
     lens.draw_sprite();
     oam_hide_rest();
@@ -78,7 +85,7 @@ void Gameplay::setup_creatures() {
                     [subrand8(fixed_mask_lut_sizes[num_fixed_features] - 1)];
 
   for (u8 i = 0; i < num_creatures; i++) {
-    retry:
+  retry:
     u8 row = subrand8(10);
     u8 column =
         subrand8(num_columns_per_row[row] - 1) + start_column_per_row[row];
@@ -110,4 +117,32 @@ void Gameplay::setup_creatures() {
     flush_vram_update2();
   }
   Attributes::flush();
+}
+
+void Gameplay::inject_creature() {
+  auto lens_column = lens.x.as_i() / 16;
+  auto lens_row = lens.y.as_i() / 16;
+  for (u8 i = 0; i < num_creatures; i++) {
+    Creature& c = creature[i];
+    if (c.row == lens_row && c.column == lens_column) {
+      // TODO: splat
+      if (c.target) {
+        num_imposters--;
+        creature[i] = creature[--num_creatures];
+      } else {
+        global_state.misses++;
+      }
+      break;
+    }
+  }
+}
+
+void Gameplay::refresh_hud() {
+  one_vram_buffer(0x10 + num_imposters, NTADR_A(12, 2));
+
+  if (global_state.misses > 0) {
+    one_vram_buffer(0x58, NTADR_A(26 + global_state.misses, 2)); // 'x'
+  }
+
+  // TODO: timer
 }
