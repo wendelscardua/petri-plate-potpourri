@@ -71,6 +71,7 @@ void Gameplay::run() {
   oam_clear();
 
   if (num_imposters == 0) {
+    global_state.plates_cleared++;
     banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Nice);
   } else {
     banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Fail);

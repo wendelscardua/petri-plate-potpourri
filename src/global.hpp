@@ -18,6 +18,8 @@ public:
   Input p2_input;
 
   u8 misses;
+  u8 plates_cleared;
+  u8 plates_cleared_high_score;
 
   Global();
 };

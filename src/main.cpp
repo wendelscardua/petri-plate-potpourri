@@ -30,8 +30,12 @@ int main() {
     }
     case Global::GameState::Gameplay: {
       global_state.misses = 0;
-      Gameplay gameplay(global_state, 12, 3, 2);
-      gameplay.run();
+      global_state.plates_cleared = 0;
+      while (global_state.misses < 3) {
+        Gameplay gameplay(global_state, 12, 3, 2);
+        gameplay.run();
+      }
+      global_state.game_state = Global::GameState::Title;
     }
     }
   }
