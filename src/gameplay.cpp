@@ -186,11 +186,13 @@ void Gameplay::inject_creature() {
 void Gameplay::refresh_hud() {
   one_vram_buffer(0x10 + num_imposters, NTADR_A(12, 2));
 
-  if (global_state.misses > 0) {
-    one_vram_buffer(0x58, NTADR_A(26 + global_state.misses, 2)); // 'x'
-  }
+  u8 text_buffer[3] = {0x0e, 0x0e, 0x0e}; // '...'
 
-  u8 timer_text[3];
-  Bindec::convert(global_state.timer_seconds, timer_text);
-  multi_vram_buffer_horz(timer_text, 3, NTADR_A(15, 2));
+  for (u8 i = 0; i < global_state.misses; i++) {
+    text_buffer[i] = 0x58; // 'x'
+  }
+  multi_vram_buffer_horz(text_buffer, 3, NTADR_A(26 + global_state.misses, 2));
+
+  Bindec::convert(global_state.timer_seconds, text_buffer);
+  multi_vram_buffer_horz(text_buffer, 3, NTADR_A(15, 2));
 }
