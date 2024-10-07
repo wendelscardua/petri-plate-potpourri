@@ -26,6 +26,22 @@ void Score::run() {
     u8 text_buffer[3];
 
     switch (delay_counter) {
+    case 18:
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 13));
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 14));
+      break;
+    case 24:
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 12));
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 15));
+      break;
+    case 30:
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 11));
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 16));
+      break;
+    case 36:
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 10));
+      multi_vram_buffer_horz("            "_ts, 12, NTADR_A(6, 17));
+      break;
     case 48:
       multi_vram_buffer_horz("Performance "_ts, 12, NTADR_A(6, 10));
       multi_vram_buffer_horz(" report:    "_ts, 12, NTADR_A(6, 11));
