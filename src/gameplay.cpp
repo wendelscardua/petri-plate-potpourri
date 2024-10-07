@@ -51,6 +51,52 @@ Gameplay::~Gameplay() {
   ppu_off();
 }
 
+void Gameplay::cleanup() {
+  const u8 start_popup_y = 0xe0;
+  const u8 target_popup_y = 0x58;
+  oam_clear();
+
+  const Sprite *popup;
+  u8 popup_y = start_popup_y;
+
+  if (num_imposters == 0) {
+    global_state.plates_cleared++;
+    if (global_state.timer_seconds < 180) {
+      global_state.timer_seconds += 5;
+    }
+    popup = UI::Nice;
+  } else {
+    popup = UI::Fail;
+  }
+
+  // reveal everything
+  u16 index = 0;
+  for (u8 row = 4; row < 30; row++, index += 0x20) {
+    ppu_wait_nmi();
+    multi_vram_buffer_horz(screen_mirror + index, 0x20, NTADR_A(0, row));
+  }
+
+  GGSound::stop();
+  if (num_imposters == 0) {
+    GGSound::play_sfx(SFX::Nice, GGSound::SFXPriority::One);
+  } else {
+    GGSound::play_sfx(SFX::Fail, GGSound::SFXPriority::One);
+  }
+
+  for (u16 continue_delay = 0; continue_delay < 5 * 60; continue_delay++) {
+    rand16();
+    ppu_wait_nmi();
+    banked_oam_meta_spr_horizontal(0x80, popup_y, UI_BANK, popup);
+    popup_y = popup_y - (popup_y - target_popup_y) / 8;
+    oam_hide_rest();
+
+    global_state.p1_input.poll();
+
+    if (global_state.p1_input.pressed() & (PAD_START | PAD_A | PAD_B)) {
+      break;
+    }
+  }
+}
 void Gameplay::run() {
   while (num_imposters > 0 && global_state.misses < 3 &&
          global_state.timer_seconds > 0) {
@@ -84,44 +130,7 @@ void Gameplay::run() {
 
   // final steps before leaving gameplay
 
-  oam_clear();
-
-  if (num_imposters == 0) {
-    global_state.plates_cleared++;
-    if (global_state.timer_seconds < 180) {
-      global_state.timer_seconds += 5;
-    }
-    banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Nice);
-  } else {
-    banked_oam_meta_spr_horizontal(0x80, 0x80, UI_BANK, UI::Fail);
-  }
-
-  oam_hide_rest();
-
-  // reveal everything
-  u16 index = 0;
-  for (u8 row = 4; row < 30; row++, index += 0x20) {
-    ppu_wait_nmi();
-    multi_vram_buffer_horz(screen_mirror + index, 0x20, NTADR_A(0, row));
-  }
-
-  GGSound::stop();
-  if (num_imposters == 0) {
-    GGSound::play_sfx(SFX::Nice, GGSound::SFXPriority::One);
-  } else {
-    GGSound::play_sfx(SFX::Fail, GGSound::SFXPriority::One);
-  }
-
-  for (u16 continue_delay = 0; continue_delay < 5 * 60; continue_delay++) {
-    rand16();
-    ppu_wait_nmi();
-
-    global_state.p1_input.poll();
-
-    if (global_state.p1_input.pressed() & (PAD_START | PAD_A | PAD_B)) {
-      break;
-    }
-  }
+  cleanup();
 }
 
 const u8 fixed_mask_lut[][6] = {

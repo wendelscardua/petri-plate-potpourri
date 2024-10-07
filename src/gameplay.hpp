@@ -13,11 +13,13 @@ class Gameplay {
   Lens lens;
 
   u8 screen_mirror[13 * 16 * 4];
+
 public:
-  Gameplay(Global&, u8 num_creatures, u8 num_imposters, u8 num_fixed_features);
+  Gameplay(Global &, u8 num_creatures, u8 num_imposters, u8 num_fixed_features);
   ~Gameplay();
 
   void setup_creatures();
+  void cleanup();
   void run();
   void refresh_hud();
   void inject_creature();
