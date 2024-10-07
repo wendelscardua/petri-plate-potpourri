@@ -14,60 +14,58 @@ extern "C" void *sound_param_word_3;
 extern "C" u8 sound_bank;
 
 namespace GGSound {
-  constexpr u8 BANK = 2;
+inline namespace Wrapper {
+extern "C" void sound_initialize();
+extern "C" void sound_stop();
+extern "C" void play_song();
+extern "C" void play_sfx();
+extern "C" void pause_song();
+extern "C" void resume_song();
+} // namespace Wrapper
 
-  inline namespace Wrapper {
-    extern "C" void sound_initialize();
-    extern "C" void sound_stop();
-    extern "C" void play_song();
-    extern "C" void play_sfx();
-    extern "C" void pause_song();
-    extern "C" void resume_song();
-  } // namespace Wrapper
-
-  __attribute__((noinline)) void init(Region arg_region,
-                                      const Track *arg_song_list[],
-                                      const Track *arg_sfx_list[],
-                                      const void *arg_instruments[],
+__attribute__((noinline)) void init(Region arg_region,
+                                    const Track *arg_song_list[],
+                                    const Track *arg_sfx_list[],
+                                    const void *arg_instruments[],
 #ifdef FEATURE_DPCM
-                                      const void *dpcm_pointers[],
+                                    const void *dpcm_pointers[],
 #endif
-                                      u8 arg_bank) {
-    sound_param_byte_0 = (u8)arg_region;
-    sound_param_word_0 = (void *)arg_song_list;
-    sound_param_word_1 = (void *)arg_sfx_list;
-    sound_param_word_2 = (void *)arg_instruments;
+                                    u8 arg_bank) {
+  sound_param_byte_0 = (u8)arg_region;
+  sound_param_word_0 = (void *)arg_song_list;
+  sound_param_word_1 = (void *)arg_sfx_list;
+  sound_param_word_2 = (void *)arg_instruments;
 #ifdef FEATURE_DPCM
-    sound_param_word_3 = (void *)dpcm_pointers;
+  sound_param_word_3 = (void *)dpcm_pointers;
 #endif
-    sound_bank = arg_bank;
-    ScopedBank ggsound_bank(BANK);
-    sound_initialize();
-  }
+  sound_bank = arg_bank;
+  ScopedBank ggsound_bank(BANK);
+  sound_initialize();
+}
 
-  __attribute__((noinline)) void stop() {
-    ScopedBank ggsound_bank(BANK);
-    sound_stop();
-  }
-  __attribute__((noinline)) void pause() {
-    ScopedBank ggsound_bank(BANK);
-    pause_song();
-  }
-  __attribute__((noinline)) void resume() {
-    ScopedBank ggsound_bank(BANK);
-    resume_song();
-  }
+__attribute__((noinline)) void stop() {
+  ScopedBank ggsound_bank(BANK);
+  sound_stop();
+}
+__attribute__((noinline)) void pause() {
+  ScopedBank ggsound_bank(BANK);
+  pause_song();
+}
+__attribute__((noinline)) void resume() {
+  ScopedBank ggsound_bank(BANK);
+  resume_song();
+}
 
-  __attribute__((noinline)) void play_song(Song song) {
-    sound_param_byte_0 = (u8)song;
-    ScopedBank ggsound_bank(BANK);
-    Wrapper::play_song();
-  }
+__attribute__((noinline)) void play_song(Song song) {
+  sound_param_byte_0 = (u8)song;
+  ScopedBank ggsound_bank(BANK);
+  Wrapper::play_song();
+}
 
-  __attribute__((noinline)) void play_sfx(SFX sfx, SFXPriority priority) {
-    sound_param_byte_0 = (u8)sfx;
-    sound_param_byte_1 = (u8)priority;
-    ScopedBank ggsound_bank(BANK);
-    Wrapper::play_sfx();
-  }
+__attribute__((noinline)) void play_sfx(SFX sfx, SFXPriority priority) {
+  sound_param_byte_0 = (u8)sfx;
+  sound_param_byte_1 = (u8)priority;
+  ScopedBank ggsound_bank(BANK);
+  Wrapper::play_sfx();
+}
 } // namespace GGSound

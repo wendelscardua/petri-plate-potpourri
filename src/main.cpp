@@ -1,6 +1,9 @@
+#include "bank-helper.hpp"
 #include "gameplay.hpp"
+#include "ggsound.hpp"
 #include "global.hpp"
 #include "score.hpp"
+#include "soundtrack-ptr.hpp"
 #include "title.hpp"
 #include <mapper.h>
 #include <nesdoug.h>
@@ -21,6 +24,11 @@ int main() {
   Global global_state;
 
   global_state.game_state = Global::GameState::Title;
+
+  banked_lambda(GGSound::BANK, []() {
+    GGSound::init(GGSound::Region::NTSC, song_list, sfx_list, instrument_list,
+                  GGSound::BANK);
+  });
 
   while (true) {
     switch (global_state.game_state) {

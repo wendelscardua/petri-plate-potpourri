@@ -1,17 +1,9 @@
 #pragma once
 #include "common.hpp"
 enum class Song : u8 {
-  TitleMusic,
-  TheChef,
-  Trina,
-  Dashwell,
-  Xe49,
-  Ruck,
-  TheMayor,
-  MasterEgret,
-  LordAzul,
-  GameOver,
-  Conclusion,
+  Prologue,
+  Pickem,
+  Praise,
 };
 enum class SFX : u8 {
   One,
