@@ -36,6 +36,7 @@ set_property(
 
   title.nam
   screen.nam
+  score.nam
 
   bg.pal
   spr.pal
@@ -46,6 +47,7 @@ add_raw_asset(SOURCE "spr.chr")
 
 add_raw_asset(SOURCE "title.nam")
 add_raw_asset(SOURCE "screen.nam")
+add_raw_asset(SOURCE "score.nam")
 
 add_raw_asset(SOURCE "bg.pal")
 add_raw_asset(SOURCE "spr.pal")

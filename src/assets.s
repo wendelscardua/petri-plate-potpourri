@@ -29,3 +29,8 @@
     .global screen_nam
     screen_nam:
     .incbin "screen.nam"
+
+    .global score_nam
+    score_nam:
+    .incbin "score.nam"
+
