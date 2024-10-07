@@ -140,6 +140,7 @@ void Gameplay::setup_creatures() {
     creature[i].row = row;
     creature[i].column = column;
     creature[i].genes = rand8();
+    creature[i].target = false;
     if (i > 0) {
       creature[i].genes =
           (creature[0].genes & mask) | (creature[i].genes & ~mask);
