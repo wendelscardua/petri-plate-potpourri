@@ -3,6 +3,7 @@
 #include "attributes.hpp"
 #include "banked-metasprites.hpp"
 #include "bindec.hpp"
+#include "ggsound.hpp"
 #include "global.hpp"
 #include "metasprites.hpp"
 #include "subrand.hpp"
@@ -40,6 +41,7 @@ Gameplay::Gameplay(Global &global_state, u8 num_creatures, u8 num_imposters,
   lens.draw_sprite();
   oam_hide_rest();
   ppu_on_all();
+  GGSound::play_song(Song::Pickem);
   pal_fade_to(0, 4);
 }
 

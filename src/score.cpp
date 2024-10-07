@@ -2,7 +2,9 @@
 #include "assets-loader.hpp"
 #include "bindec.hpp"
 #include "charset.hpp"
+#include "ggsound.hpp"
 #include "global.hpp"
+#include "soundtrack.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
 
@@ -11,6 +13,7 @@ Score::Score(Global &global_state) : global_state(global_state) {
   oam_clear();
   ppu_on_all();
   pal_fade_to(0, 4);
+  GGSound::play_song(Song::Praise);
 }
 
 Score::~Score() {
@@ -63,7 +66,7 @@ void Score::run() {
       Bindec::convert(global_state.plates_cleared_high_score, text_buffer);
       multi_vram_buffer_horz(text_buffer, 3, NTADR_A(15, 16));
       break;
-    case 540:
+    case 3600:
       global_state.game_state = Global::GameState::Title;
       break;
     }

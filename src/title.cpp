@@ -1,6 +1,8 @@
 #include "title.hpp"
 #include "assets-loader.hpp"
+#include "ggsound.hpp"
 #include "global.hpp"
+#include "soundtrack.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
 
@@ -8,6 +10,7 @@ Title::Title(Global &global_state) : global_state(global_state) {
   AssetsLoader::load_title_assets();
   oam_clear();
   ppu_on_all();
+  GGSound::play_song(Song::Prologue);
   pal_fade_to(0, 4);
 }
 
