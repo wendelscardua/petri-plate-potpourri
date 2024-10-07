@@ -6,6 +6,7 @@
 #include "ggsound.hpp"
 #include "global.hpp"
 #include "metasprites.hpp"
+#include "soundtrack.hpp"
 #include "subrand.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
@@ -68,6 +69,11 @@ void Gameplay::run() {
     if (global_state.timer_frames == 60) {
       global_state.timer_frames = 0;
       global_state.timer_seconds--;
+      if (global_state.timer_seconds == 30) {
+        GGSound::play_sfx(SFX::TimeAlmostOut, GGSound::SFXPriority::One);
+      } else if (global_state.timer_seconds == 0) {
+        GGSound::play_sfx(SFX::TimeOut, GGSound::SFXPriority::One);
+      }
     }
 
     refresh_hud();
@@ -75,6 +81,8 @@ void Gameplay::run() {
     lens.draw_sprite();
     oam_hide_rest();
   }
+
+  // final steps before leaving gameplay
 
   oam_clear();
 
@@ -95,6 +103,12 @@ void Gameplay::run() {
   for (u8 row = 4; row < 30; row++, index += 0x20) {
     ppu_wait_nmi();
     multi_vram_buffer_horz(screen_mirror + index, 0x20, NTADR_A(0, row));
+  }
+
+  if (num_imposters == 0) {
+    GGSound::play_sfx(SFX::Nice, GGSound::SFXPriority::One);
+  } else {
+    GGSound::play_sfx(SFX::Fail, GGSound::SFXPriority::One);
   }
 
   while (true) {
@@ -172,8 +186,10 @@ void Gameplay::inject_creature() {
       if (c.target) {
         num_imposters--;
         creature[i] = creature[--num_creatures];
+        GGSound::play_sfx(SFX::GoodHit, GGSound::SFXPriority::One);
       } else {
         global_state.misses++;
+        GGSound::play_sfx(SFX::BadHit, GGSound::SFXPriority::One);
       }
       break;
     }

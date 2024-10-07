@@ -73,6 +73,7 @@ void Score::run() {
     delay_counter++;
     if (delay_counter > 240) {
       if (global_state.p1_input.pressed() & (PAD_START | PAD_A | PAD_B)) {
+        GGSound::play_sfx(SFX::Start, GGSound::SFXPriority::One);
         global_state.game_state = Global::GameState::Title;
         break;
       }

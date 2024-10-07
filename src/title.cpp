@@ -27,6 +27,7 @@ void Title::run() {
 
     if (global_state.p1_input.pressed() & (PAD_START | PAD_A | PAD_B)) {
       global_state.game_state = Global::GameState::Gameplay;
+      GGSound::play_sfx(SFX::Start, GGSound::SFXPriority::One);
       break;
     }
   }
