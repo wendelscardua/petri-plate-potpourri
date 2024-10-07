@@ -55,12 +55,7 @@ void Gameplay::run() {
 
     global_state.p1_input.poll();
 
-    if (global_state.p1_input.pressed() & PAD_START) {
-      // TODO: remove this
-      break;
-    }
-
-    if (global_state.p1_input.pressed() & PAD_A) {
+    if (global_state.p1_input.pressed() & (PAD_A | PAD_B)) {
       // antibiotic shot
       inject_creature();
     }
@@ -93,6 +88,7 @@ void Gameplay::run() {
 
   oam_hide_rest();
 
+  // reveal everything
   u16 index = 0;
   for (u8 row = 4; row < 30; row++, index += 0x20) {
     ppu_wait_nmi();
@@ -105,9 +101,7 @@ void Gameplay::run() {
 
     global_state.p1_input.poll();
 
-    if (global_state.p1_input.pressed() & PAD_START) {
-      // TODO: remove this
-      global_state.game_state = Global::GameState::Title;
+    if (global_state.p1_input.pressed() & (PAD_START | PAD_A | PAD_B)) {
       break;
     }
   }

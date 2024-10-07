@@ -22,7 +22,7 @@ void Title::run() {
     ppu_wait_nmi();
     global_state.p1_input.poll();
 
-    if (global_state.p1_input.pressed() & (PAD_START | PAD_A)) {
+    if (global_state.p1_input.pressed() & (PAD_START | PAD_A | PAD_B)) {
       global_state.game_state = Global::GameState::Gameplay;
       break;
     }

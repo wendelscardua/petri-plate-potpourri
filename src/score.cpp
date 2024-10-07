@@ -2,6 +2,7 @@
 #include "assets-loader.hpp"
 #include "bindec.hpp"
 #include "charset.hpp"
+#include "global.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
 
@@ -19,9 +20,10 @@ Score::~Score() {
 
 void Score::run() {
   u16 delay_counter = 0;
-  while (true) {
+  while (global_state.game_state == Global::GameState::Score) {
     rand16();
     ppu_wait_nmi();
+    global_state.p1_input.poll();
 
     u8 text_buffer[3];
 
@@ -61,7 +63,16 @@ void Score::run() {
       Bindec::convert(global_state.plates_cleared_high_score, text_buffer);
       multi_vram_buffer_horz(text_buffer, 3, NTADR_A(15, 16));
       break;
+    case 540:
+      global_state.game_state = Global::GameState::Title;
+      break;
     }
     delay_counter++;
+    if (delay_counter > 240) {
+      if (global_state.p1_input.pressed() & (PAD_START | PAD_A | PAD_B)) {
+        global_state.game_state = Global::GameState::Title;
+        break;
+      }
+    }
   }
 }
