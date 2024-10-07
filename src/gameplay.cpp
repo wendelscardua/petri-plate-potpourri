@@ -2,6 +2,7 @@
 #include "assets-loader.hpp"
 #include "attributes.hpp"
 #include "banked-metasprites.hpp"
+#include "bindec.hpp"
 #include "global.hpp"
 #include "metasprites.hpp"
 #include "subrand.hpp"
@@ -48,7 +49,8 @@ Gameplay::~Gameplay() {
 }
 
 void Gameplay::run() {
-  while (num_imposters > 0 && global_state.misses < 3 && global_state.timer_seconds > 0) {
+  while (num_imposters > 0 && global_state.misses < 3 &&
+         global_state.timer_seconds > 0) {
     ppu_wait_nmi();
 
     global_state.p1_input.poll();
@@ -189,37 +191,6 @@ void Gameplay::refresh_hud() {
   }
 
   u8 timer_text[3];
-  u16 temp = global_state.timer_seconds;
-
-  u8 digit = 0;
-  if (temp >= 200) {
-    temp -= 200;
-    digit += 2;
-  }
-  if (temp >= 100) {
-    temp -= 100;
-    digit += 1;
-  }
-  timer_text[0] = 0x10 + digit;
-  digit = 0;
-  if (temp >= 80) {
-    temp -= 80;
-    digit += 8;
-  }
-  if (temp >= 40) {
-    temp -= 40;
-    digit += 4;
-  }
-  if (temp >= 20) {
-    temp -= 20;
-    digit += 2;
-  }
-  if (temp >= 10) {
-    temp -= 10;
-    digit += 1;
-  }
-  timer_text[1] = 0x10 + digit;
-  timer_text[2] = 0x10 + temp;
-
+  Bindec::convert(global_state.timer_seconds, timer_text);
   multi_vram_buffer_horz(timer_text, 3, NTADR_A(15, 2));
 }

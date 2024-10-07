@@ -20,7 +20,7 @@ public:
   u8 misses;
   u8 plates_cleared;
   u8 plates_cleared_high_score;
-  u16 timer_seconds;
+  u8 timer_seconds;
   u8 timer_frames;
 
   Global();

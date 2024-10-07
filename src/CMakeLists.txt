@@ -16,6 +16,7 @@ add_library(SourceObj
 
   assets-loader.cpp
   attributes.cpp
+  bindec.cpp
   input.cpp
   ggsound.cpp
   log.cpp

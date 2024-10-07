@@ -1,5 +1,6 @@
 #include "score.hpp"
 #include "assets-loader.hpp"
+#include "bindec.hpp"
 #include "charset.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
@@ -22,6 +23,8 @@ void Score::run() {
     rand16();
     ppu_wait_nmi();
 
+    u8 text_buffer[3];
+
     switch (delay_counter) {
     case 48:
       multi_vram_buffer_horz("Performance "_ts, 12, NTADR_A(6, 10));
@@ -32,13 +35,15 @@ void Score::run() {
       multi_vram_buffer_horz(" cleared:   "_ts, 12, NTADR_A(6, 14));
       break;
     case 144:
-      // TODO display current score
+      Bindec::convert(global_state.plates_cleared, text_buffer);
+      multi_vram_buffer_horz(text_buffer, 3, NTADR_A(15, 14));
       break;
     case 192:
       multi_vram_buffer_horz(" Best:      "_ts, 12, NTADR_A(6, 16));
       break;
     case 240:
-      // TODO display best score
+      Bindec::convert(global_state.plates_cleared_high_score, text_buffer);
+      multi_vram_buffer_horz(text_buffer, 3, NTADR_A(15, 16));
       break;
     }
     delay_counter++;
