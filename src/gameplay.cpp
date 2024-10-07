@@ -191,7 +191,7 @@ void Gameplay::refresh_hud() {
   for (u8 i = 0; i < global_state.misses; i++) {
     text_buffer[i] = 0x58; // 'x'
   }
-  multi_vram_buffer_horz(text_buffer, 3, NTADR_A(26 + global_state.misses, 2));
+  multi_vram_buffer_horz(text_buffer, 3, NTADR_A(27, 2));
 
   Bindec::convert(global_state.timer_seconds, text_buffer);
   multi_vram_buffer_horz(text_buffer, 3, NTADR_A(15, 2));
