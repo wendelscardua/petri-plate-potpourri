@@ -22,4 +22,5 @@ public:
 
   ASSETS_LOADER_TEXT static void load_title_assets();
   ASSETS_LOADER_TEXT static void load_gameplay_assets();
+  ASSETS_LOADER_TEXT static void load_score_assets();
 };

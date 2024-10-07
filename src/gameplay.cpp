@@ -98,6 +98,7 @@ void Gameplay::run() {
   }
 
   while (true) {
+    rand16();
     ppu_wait_nmi();
 
     global_state.p1_input.poll();

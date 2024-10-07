@@ -9,6 +9,7 @@ add_library(SourceObj
   global.cpp
   gameplay.cpp
   title.cpp
+  score.cpp
   creature.cpp
   lens.cpp
   subrand.s
