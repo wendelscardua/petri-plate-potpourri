@@ -11,6 +11,9 @@
 #include <nesdoug.h>
 #include <neslib.h>
 
+static const u8 cross_top[] = {0xd7, 0xd8};
+static const u8 cross_bottom[] = {0xe7, 0xe8};
+
 static const u8 starting_row = 4;
 
 static const u8 start_column_per_row[] = {
@@ -24,7 +27,8 @@ static const u8 num_columns_per_row[] = {
 Gameplay::Gameplay(Global &global_state, u8 num_creatures, u8 num_imposters,
                    u8 num_fixed_features)
     : global_state(global_state), num_creatures(num_creatures),
-      num_imposters(num_imposters), num_fixed_features(num_fixed_features),
+      num_imposters(num_imposters), killed_imposters(0),
+      num_fixed_features(num_fixed_features),
       lens(0x80, 0x80, global_state.p1_input, screen_mirror) {
   AssetsLoader::load_gameplay_assets();
 
@@ -37,6 +41,14 @@ Gameplay::Gameplay(Global &global_state, u8 num_creatures, u8 num_imposters,
     vram_put(3);
   }
   lens.refill();
+
+  for (u8 i = 0; i < 3; i++) {
+    if (i < global_state.misses) {
+      multi_vram_buffer_horz(cross_top, 2, NTADR_A(22 + 2 * i, 2));
+      multi_vram_buffer_horz(cross_bottom, 2, NTADR_A(22 + 2 * i, 3));
+    }
+  }
+  flush_vram_update2();
 
   oam_clear();
   lens.draw_sprite();
@@ -59,7 +71,7 @@ void Gameplay::cleanup() {
   const Sprite *popup;
   u8 popup_y = start_popup_y;
 
-  if (num_imposters == 0) {
+  if (num_imposters == killed_imposters) {
     global_state.plates_cleared++;
     if (global_state.timer_seconds < 180) {
       global_state.timer_seconds += 5;
@@ -77,7 +89,7 @@ void Gameplay::cleanup() {
   }
 
   GGSound::stop();
-  if (num_imposters == 0) {
+  if (num_imposters == killed_imposters) {
     GGSound::play_sfx(SFX::Nice, GGSound::SFXPriority::One);
   } else {
     GGSound::play_sfx(SFX::Fail, GGSound::SFXPriority::One);
@@ -98,7 +110,7 @@ void Gameplay::cleanup() {
   }
 }
 void Gameplay::run() {
-  while (num_imposters > 0 && global_state.misses < 3 &&
+  while (num_imposters != killed_imposters && global_state.misses < 3 &&
          global_state.timer_seconds > 0) {
     ppu_wait_nmi();
 
@@ -183,6 +195,13 @@ void Gameplay::setup_creatures() {
     }
   }
 
+  for (u8 i = 0; i < num_imposters; i++) {
+    const u8 uncheck_top[] = {0xd2, 0xd3};
+    const u8 uncheck_bottom[] = {0xe2, 0xe3};
+    multi_vram_buffer_horz(uncheck_top, 2, NTADR_A(4 + 2 * i, 2));
+    multi_vram_buffer_horz(uncheck_bottom, 2, NTADR_A(4 + 2 * i, 3));
+  }
+
   Attributes::init();
   for (u8 i = 0; i < num_creatures; i++) {
     creature[i].draw();
@@ -199,9 +218,16 @@ void Gameplay::inject_creature() {
     if (c.row == lens_row && c.column == lens_column) {
       c.splat(screen_mirror);
       if (c.target) {
-        num_imposters--;
+        const u8 check_top[] = {0xd4, 0xd5};
+        const u8 check_bottom[] = {0xe4, 0xe5};
+        multi_vram_buffer_horz(check_top, 2,
+                               NTADR_A(4 + 2 * killed_imposters, 2));
+        multi_vram_buffer_horz(check_bottom, 2,
+                               NTADR_A(4 + 2 * killed_imposters, 3));
+        killed_imposters++;
         creature[i] = creature[--num_creatures];
         GGSound::play_sfx(SFX::GoodHit, GGSound::SFXPriority::One);
+        // update check
       } else {
         global_state.misses++;
         GGSound::play_sfx(SFX::BadHit, GGSound::SFXPriority::One);
@@ -212,15 +238,15 @@ void Gameplay::inject_creature() {
 }
 
 void Gameplay::refresh_hud() {
-  one_vram_buffer(0x10 + num_imposters, NTADR_A(12, 2));
-
-  u8 text_buffer[3] = {0x0e, 0x0e, 0x0e}; // '...'
-
-  for (u8 i = 0; i < global_state.misses; i++) {
-    text_buffer[i] = 0x58; // 'x'
-  }
-  multi_vram_buffer_horz(text_buffer, 3, NTADR_A(27, 2));
+  u8 text_buffer[3];
 
   Bindec::convert(global_state.timer_seconds, text_buffer);
   multi_vram_buffer_horz(text_buffer, 3, NTADR_A(15, 2));
+
+  for (u8 i = 0; i < 3; i++) {
+    if (i < global_state.misses) {
+      multi_vram_buffer_horz(cross_top, 2, NTADR_A(22 + 2 * i, 2));
+      multi_vram_buffer_horz(cross_bottom, 2, NTADR_A(22 + 2 * i, 3));
+    }
+  }
 }

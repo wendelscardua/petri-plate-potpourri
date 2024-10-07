@@ -8,6 +8,7 @@ class Gameplay {
   static constexpr u8 MAX_CREATURES = 16;
   u8 num_creatures;
   u8 num_imposters;
+  u8 killed_imposters;
   u8 num_fixed_features;
   Creature creature[MAX_CREATURES];
   Lens lens;
