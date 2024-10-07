@@ -14,8 +14,8 @@ public:
     };
   };
 
-  u8 row;
-  u8 column;
+  u8 row : 4;
+  u8 column : 4;
 
   bool target;
 

@@ -165,17 +165,22 @@ void Gameplay::setup_creatures() {
 
     creature[i].row = row;
     creature[i].column = column;
-    creature[i].genes = rand8();
-    creature[i].target = false;
-    if (i > 0) {
-      creature[i].genes =
-          (creature[0].genes & mask) | (creature[i].genes & ~mask);
-    }
   }
 
-  for (u8 i = 0; i < num_imposters; i++) {
-    creature[i].genes ^= mask;
-    creature[i].target = true;
+  u8 expected_genes = rand8() & mask;
+
+  for (u8 i = 0; i < num_creatures; i++) {
+    if (i < num_imposters) {
+      creature[i].target = true;
+      u8 temp;
+      do {
+        temp = rand8();
+      } while ((temp & mask) == expected_genes);
+      creature[i].genes = temp;
+    } else {
+      creature[i].target = false;
+      creature[i].genes = expected_genes | (rand8() & ~mask);
+    }
   }
 
   Attributes::init();
