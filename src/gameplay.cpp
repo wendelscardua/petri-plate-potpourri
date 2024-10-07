@@ -105,13 +105,14 @@ void Gameplay::run() {
     multi_vram_buffer_horz(screen_mirror + index, 0x20, NTADR_A(0, row));
   }
 
+  GGSound::stop();
   if (num_imposters == 0) {
     GGSound::play_sfx(SFX::Nice, GGSound::SFXPriority::One);
   } else {
     GGSound::play_sfx(SFX::Fail, GGSound::SFXPriority::One);
   }
 
-  while (true) {
+  for (u16 continue_delay = 0; continue_delay < 5 * 60; continue_delay++) {
     rand16();
     ppu_wait_nmi();
 
